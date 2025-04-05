@@ -3,24 +3,58 @@ body {
   background: #e0eaff;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .app {
+  width: 100%;
   max-width: 600px;
-  margin: 40px auto;
+  margin: 20px;
   background: white;
-  padding: 20px;
+  padding: 25px;
   border-radius: 16px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-header {
-  text-align: center;
-  margin-bottom: 20px;
+.game-area {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-header h1 span {
-  color: #6c5ce7;
+.task-card {
+  background: #f1f2f6;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.answer-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.answer-input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #dfe6e9;
+  border-radius: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.answer-input:focus {
+  outline: none;
+  border-color: #6c5ce7;
+}
+
+.check-btn {
+  background: #00b894;
 }
 
 .glow-btn {
@@ -32,87 +66,7 @@ header h1 span {
   border-radius: 12px;
   font-size: 16px;
   cursor: pointer;
-  margin-bottom: 20px;
-}
-
-.task-card {
-  background: #f1f2f6;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.card-header {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.options {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.options button {
-  padding: 12px;
-  border: none;
-  background: #dfe6e9;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.options button.correct {
-  background: #00b894;
-  color: white;
-}
-
-.options button.wrong {
-  background: #d63031;
-  color: white;
-}
-
-.stats {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px 0;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.feedback {
-  text-align: center;
-  font-weight: 500;
-  min-height: 30px;
-}
-.answer-area {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.answer-input {
-  width: 100%;
-  padding: 15px;
-  border: 2px solid #dfe6e9;
-  border-radius: 12px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-.answer-input:focus {
-  outline: none;
-  border-color: #6c5ce7;
-  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
-}
-
-.check-btn {
-  background: #00b894;
-  margin-top: 0;
+  transition: background 0.3s;
 }
 
 .glow-btn:disabled {
@@ -120,7 +74,15 @@ header h1 span {
   cursor: not-allowed;
 }
 
-.answer-input:disabled {
-  background: #f1f2f6;
-  cursor: not-allowed;
+/* Остальные стили остаются без изменений */
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 15px 0;
+}
+
+.feedback {
+  text-align: center;
+  min-height: 30px;
+  font-weight: 500;
 }
