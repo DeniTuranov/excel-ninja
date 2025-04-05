@@ -1,3 +1,5 @@
+console.log("Сервер запускается...");
+console.log("API Key:", process.env.OPENAI_API_KEY ? "Есть" : "Нет");
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -31,3 +33,6 @@ app.get('/api/health', (req, res) => {
 
 // Генерация задания для Excel
 app.post('/api/task', async (req, res)
+process.on('unhandledRejection', (err) => {
+  console.error('Необработанная ошибка:', err);
+});
