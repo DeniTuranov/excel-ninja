@@ -30,6 +30,7 @@ async function fetchTaskFromGPT() {
     }
 }
 
+
 async function startTraining() {
     const newTask = await fetchTaskFromGPT();
     if (newTask) {
