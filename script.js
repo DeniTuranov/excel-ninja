@@ -18,10 +18,10 @@ userInput.addEventListener('keypress', (e) => {
 
 async function fetchTaskFromGPT() {
     try {
-        const response = await fetch('https://excel-ninja-ape4.vercel.app/api/task', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        });
+        const response = await fetch('https://excel-ninja-ape4-git-main-denituranovs-projects.vercel.app/api/task', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' }
+});
         const data = await response.json();
         return data;
     } catch (error) {
