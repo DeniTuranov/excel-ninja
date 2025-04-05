@@ -1,0 +1,95 @@
+:root {
+  --primary: #6c5ce7;
+  --success: #00b894;
+  --error: #d63031;
+  --background: #f5f6fa;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--background);
+  margin: 0;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.app {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+header h1 {
+  color: #2d3436;
+  margin-bottom: 5px;
+}
+
+header h1 span {
+  color: var(--primary);
+}
+
+.glow-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.glow-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.task-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  min-height: 120px;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 25px 0;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  display: block;
+  color: var(--primary);
+}
+
+.feedback {
+  padding: 15px;
+  border-radius: 8px;
+  background: #f1f3f5;
+  text-align: center;
+  min-height: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .app {
+    padding: 15px;
+  }
+}
