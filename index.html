@@ -1,54 +1,13 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Excel Ninja | Тренажёр горячих клавиш</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="app">
-    <header>
-      <h1>EXCEL <span>NINJA</span></h1>
-      <p class="tagline">Тренажёр горячих клавиш Excel</p>
-    </header>
-
-    <div class="game-area">
-      <button id="startBtn" class="glow-btn">СТАРТ</button>
-
-      <div class="task-card">
-        <div class="card-header">Что делает сочетание клавиш...</div>
-        <div class="card-content" id="task">Нажми «СТАРТ» для начала</div>
-      </div>
-
-      <div class="answer-area">
-        <input 
-          type="text" 
-          id="userInput" 
-          placeholder="Введите ответ..." 
-          class="answer-input"
-          disabled
-        >
-        <button id="checkBtn" class="glow-btn check-btn" disabled>
-          ПРОВЕРИТЬ
-        </button>
-      </div>
-
-      <div class="stats">
-        <div class="stat-item">
-          <span class="stat-value" id="score">0</span>
-          <span class="stat-label">БАЛЛЫ</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value" id="streak">0</span>
-          <span class="stat-label">СЕРИЯ</span>
-        </div>
-      </div>
-
-      <div class="feedback" id="feedback"></div>
-    </div>
+<!-- Добавьте это в game-area -->
+<div class="task-card">
+  <div class="card-content" id="task">
+    Нажмите "СТАРТ" для получения задачи
   </div>
+</div>
 
-  <script src="script.js"></script>
-</body>
-</html>
+<div class="answer-area">
+  <input type="text" id="answerInput" placeholder="Введите действие..." class="answer-input" disabled>
+  <button id="checkBtn" class="glow-btn check-btn" disabled>ПРОВЕРИТЬ</button>
+</div>
+
+<div class="solution-area" id="feedback"></div>
