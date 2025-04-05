@@ -3,58 +3,81 @@ import { OpenAI } from 'openai';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-// Загрузка переменных окружения
 dotenv.config();
 const app = express();
 
 // Настройка CORS
+const allowedOrigins = [
+  'https://excel-ninja.vercel.app',
+  'https://excel-ninja-*.vercel.app'
+];
+
 app.use(cors({
-  origin: [
-    'https://excel-ninja.vercel.app',
-    'https://excel-ninja-*.vercel.app'
-  ],
-  methods: ['GET', 'POST', 'OPTIONS']
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true
 }));
 
 app.use(express.json());
 
-// Инициализация OpenAI с вашим ключом из переменных окружения
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Проверка работы API
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK',
-    message: 'API работает корректно',
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
-
-// Генерация задания
+// Генерация задачи Excel
 app.post('/api/generate-task', async (req, res) => {
   try {
-    const prompt = `...`; // Ваш промпт
-        
+    const prompt = `
+      Придумай задачу для Excel и укажи горячие клавиши для её решения.
+      Формат ответа (строго JSON):
+      {
+        "task": "описание задачи",
+        "solution": {
+          "action": "необходимое действие",
+          "shortcut": "горячие клавиши",
+          "description": "что делает это сочетание"
+        }
+      }
+      Примеры задач:
+      - Вставка текущей даты
+      - Создание таблицы
+      - Применение фильтра к данным
+      - Копирование формата ячеек
+    `;
+
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.7
+      temperature: 0.7,
+      max_tokens: 300
     });
 
     const content = completion.choices[0].message.content;
-    res.json(JSON.parse(content));
+    const taskData = JSON.parse(content);
     
-  } catch (error) {
-    console.error('Ошибка OpenAI:', error);
-    // Fallback данные
     res.json({
-      task: "Скопируйте выделенные ячейки",
-      solution: {
-        action: "Копировать",
-        shortcut: "Ctrl+C",
-        description: "Копирует выделенные ячейки в буфер обмена"
+      success: true,
+      data: taskData
+    });
+
+  } catch (error) {
+    console.error('Ошибка генерации задачи:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Не удалось сгенерировать задачу',
+      fallback: {
+        task: "Скопируйте значение из ячейки выше",
+        solution: {
+          action: "Копировать сверху",
+          shortcut: "Ctrl+D",
+          description: "Копирует значение из ячейки выше в текущую"
+        }
       }
     });
   }
@@ -64,4 +87,5 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
   console.log(`Режим: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`CORS разрешён для: ${allowedOrigins.join(', ')}`);
 });
