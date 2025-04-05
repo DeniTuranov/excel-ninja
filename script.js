@@ -2,17 +2,20 @@ let currentCommand = null;
 let score = 0;
 let streak = 0;
 
-// Получаем элементы DOM
 const startBtn = document.getElementById('startBtn');
-const taskEl = document.getElementById('task'); // Изменено - убрали .querySelector
+const taskEl = document.getElementById('task');
+const userInput = document.getElementById('userInput');
+const checkBtn = document.getElementById('checkBtn');
 const feedbackEl = document.getElementById('feedback');
 const scoreEl = document.getElementById('score');
 const streakEl = document.getElementById('streak');
 
-// Добавляем обработчики событий
 startBtn.addEventListener('click', startTraining);
+checkBtn.addEventListener('click', checkAnswer);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkAnswer();
+});
 
-// Функция для получения задания
 async function fetchTaskFromGPT() {
     try {
         const response = await fetch('https://excel-ninja-ape4-git-main-denituranovs-projects.vercel.app/api/task', {
@@ -20,15 +23,13 @@ async function fetchTaskFromGPT() {
             headers: { 'Content-Type': 'application/json' }
         });
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error('Ошибка сети');
         
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Ошибка получения задания:', error);
-        // Возвращаем fallback-задание если API не доступно
+        console.error('Ошибка:', error);
+        // Fallback данные
         const fallbackTasks = [
             { cmd: "Ctrl+C", desc: "копировать выделенное" },
             { cmd: "Ctrl+V", desc: "вставить из буфера обмена" },
@@ -38,42 +39,50 @@ async function fetchTaskFromGPT() {
     }
 }
 
-// Функция начала тренировки
 async function startTraining() {
-    try {
-        const newTask = await fetchTaskFromGPT();
-        if (newTask) {
-            currentCommand = newTask;
-            taskEl.textContent = `Что делает сочетание клавиш: ${currentCommand.cmd}?`;
-            feedbackEl.textContent = '';
-        } else {
-            taskEl.textContent = 'Не удалось загрузить задание. Попробуйте ещё раз.';
-        }
-    } catch (error) {
-        console.error('Ошибка в startTraining:', error);
-        taskEl.textContent = 'Произошла ошибка. Обновите страницу.';
+    startBtn.disabled = true;
+    userInput.disabled = false;
+    checkBtn.disabled = false;
+    userInput.focus();
+    
+    const newTask = await fetchTaskFromGPT();
+    if (newTask) {
+        currentCommand = newTask;
+        taskEl.textContent = `Что делает сочетание клавиш: ${currentCommand.cmd}?`;
+        userInput.value = '';
+        feedbackEl.textContent = '';
+    } else {
+        taskEl.textContent = 'Не удалось загрузить задание. Попробуйте ещё раз.';
     }
 }
 
-// Функция проверки ответа
 function checkAnswer() {
-    const userAnswer = userInput?.value?.trim().toLowerCase();
+    const userAnswer = userInput.value.trim().toLowerCase();
     const correctAnswer = currentCommand?.desc?.trim().toLowerCase();
 
-    if (!userAnswer || !correctAnswer) return;
+    if (!userAnswer) return;
 
     if (userAnswer === correctAnswer) {
-        feedbackEl.textContent = '✅ Верно!';
-        feedbackEl.style.color = 'var(--success)';
+        feedbackEl.textContent = '✅ Верно! +10 баллов';
+        feedbackEl.style.color = '#00b894';
         score += 10;
         streak++;
     } else {
-        feedbackEl.textContent = `❌ Неверно. Ответ: ${currentCommand.desc}`;
-        feedbackEl.style.color = 'var(--error)';
+        feedbackEl.textContent = `❌ Неверно. Правильно: ${currentCommand.desc}`;
+        feedbackEl.style.color = '#d63031';
         streak = 0;
     }
 
     scoreEl.textContent = score;
     streakEl.textContent = streak;
-    setTimeout(startTraining, 1500);
+    
+    // Подготовка к следующему вопросу
+    startBtn.disabled = false;
+    userInput.disabled = true;
+    checkBtn.disabled = true;
+    
+    setTimeout(() => {
+        feedbackEl.textContent = 'Нажмите СТАРТ для следующего вопроса';
+        feedbackEl.style.color = '';
+    }, 2000);
 }
