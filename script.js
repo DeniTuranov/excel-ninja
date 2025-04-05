@@ -18,7 +18,7 @@ userInput.addEventListener('keypress', (e) => {
 
 async function fetchTaskFromGPT() {
     try {
-        const response = await fetch('http://localhost:3001/api/task', {
+        const response = await fetch('https://excel-ninja-ape4.vercel.app/api/task', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
