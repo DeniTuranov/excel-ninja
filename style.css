@@ -86,3 +86,22 @@ body {
   min-height: 30px;
   font-weight: 500;
 }
+.task-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  min-height: 100px;
+}
+
+.answer-area {
+  margin: 20px 0;
+}
+
+.solution-area {
+  background: #f1f3f5;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  line-height: 1.6;
+}
