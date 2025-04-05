@@ -1,88 +1,84 @@
-let currentCommand = null;
+let currentTask = null;
 let score = 0;
 let streak = 0;
 
 const startBtn = document.getElementById('startBtn');
 const taskEl = document.getElementById('task');
-const userInput = document.getElementById('userInput');
+const answerInput = document.getElementById('answerInput');
 const checkBtn = document.getElementById('checkBtn');
 const feedbackEl = document.getElementById('feedback');
 const scoreEl = document.getElementById('score');
 const streakEl = document.getElementById('streak');
 
-startBtn.addEventListener('click', startTraining);
+startBtn.addEventListener('click', generateNewTask);
 checkBtn.addEventListener('click', checkAnswer);
-userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') checkAnswer();
+answerInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') checkAnswer();
 });
 
-async function fetchTaskFromGPT() {
-    try {
-        const response = await fetch('https://excel-ninja-ape4-git-main-denituranovs-projects.vercel.app/api/task', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        
-        if (!response.ok) throw new Error('Ошибка сети');
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Ошибка:', error);
-        // Fallback данные
-        const fallbackTasks = [
-            { cmd: "Ctrl+C", desc: "копировать выделенное" },
-            { cmd: "Ctrl+V", desc: "вставить из буфера обмена" },
-            { cmd: "Ctrl+Z", desc: "отменить последнее действие" }
-        ];
-        return fallbackTasks[Math.floor(Math.random() * fallbackTasks.length)];
-    }
-}
-
-async function startTraining() {
+async function generateNewTask() {
+  try {
     startBtn.disabled = true;
-    userInput.disabled = false;
+    answerInput.disabled = false;
     checkBtn.disabled = false;
-    userInput.focus();
     
-    const newTask = await fetchTaskFromGPT();
-    if (newTask) {
-        currentCommand = newTask;
-        taskEl.textContent = `Что делает сочетание клавиш: ${currentCommand.cmd}?`;
-        userInput.value = '';
-        feedbackEl.textContent = '';
-    } else {
-        taskEl.textContent = 'Не удалось загрузить задание. Попробуйте ещё раз.';
-    }
+    const response = await fetch('https://your-server-url/api/generate-task', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    if (!response.ok) throw new Error('Network error');
+    
+    const data = await response.json();
+    currentTask = data;
+    
+    taskEl.innerHTML = `
+      <strong>Задача:</strong> ${data.task}<br><br>
+      <strong>Какое действие нужно выполнить?</strong>
+    `;
+    
+    answerInput.value = '';
+    answerInput.focus();
+    feedbackEl.textContent = '';
+    
+  } catch (error) {
+    console.error('Error:', error);
+    taskEl.textContent = 'Не удалось загрузить задание. Попробуйте снова.';
+    startBtn.disabled = false;
+  }
 }
 
 function checkAnswer() {
-    const userAnswer = userInput.value.trim().toLowerCase();
-    const correctAnswer = currentCommand?.desc?.trim().toLowerCase();
+  const userAnswer = answerInput.value.trim().toLowerCase();
+  const correctAnswer = currentTask.solution.action.toLowerCase();
 
-    if (!userAnswer) return;
+  if (!userAnswer) return;
 
-    if (userAnswer === correctAnswer) {
-        feedbackEl.textContent = '✅ Верно! +10 баллов';
-        feedbackEl.style.color = '#00b894';
-        score += 10;
-        streak++;
-    } else {
-        feedbackEl.textContent = `❌ Неверно. Правильно: ${currentCommand.desc}`;
-        feedbackEl.style.color = '#d63031';
-        streak = 0;
-    }
+  if (userAnswer === correctAnswer) {
+    feedbackEl.innerHTML = `
+      ✅ Верно!<br><br>
+      <strong>Решение:</strong> ${currentTask.solution.action}<br>
+      <strong>Горячие клавиши:</strong> ${currentTask.solution.shortcut}<br>
+      <strong>Описание:</strong> ${currentTask.solution.description}
+    `;
+    feedbackEl.style.color = '#00b894';
+    score += 10;
+    streak++;
+  } else {
+    feedbackEl.innerHTML = `
+      ❌ Неверно. Правильный ответ:<br><br>
+      <strong>Действие:</strong> ${currentTask.solution.action}<br>
+      <strong>Горячие клавиши:</strong> ${currentTask.solution.shortcut}<br>
+      <strong>Описание:</strong> ${currentTask.solution.description}
+    `;
+    feedbackEl.style.color = '#d63031';
+    streak = 0;
+  }
 
-    scoreEl.textContent = score;
-    streakEl.textContent = streak;
-    
-    // Подготовка к следующему вопросу
-    startBtn.disabled = false;
-    userInput.disabled = true;
-    checkBtn.disabled = true;
-    
-    setTimeout(() => {
-        feedbackEl.textContent = 'Нажмите СТАРТ для следующего вопроса';
-        feedbackEl.style.color = '';
-    }, 2000);
+  scoreEl.textContent = score;
+  streakEl.textContent = streak;
+  
+  startBtn.disabled = false;
+  answerInput.disabled = true;
+  checkBtn.disabled = true;
 }
