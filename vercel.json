@@ -2,19 +2,8 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "server.js",
-      "methods": ["GET", "POST", "OPTIONS"]
-    },
-    {
-      "src": "/(.*)",
-      "dest": "public/$1"
+      "src": "index.html",
+      "use": "@vercel/static"
     }
   ]
 }
